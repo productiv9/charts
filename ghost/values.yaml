@@ -17,7 +17,7 @@ r2:
   bucket: "YOUR_BUCKET"
   endpoint: "YOUR_ENDPOINT"
   accessKeyId: "YOUR_ACCESS_KEY_ID"
-  secretAccess: "YOUR_SECRET_ACCESS"
+  secretAccessKey: "YOUR_SECRET_ACCESS"
 
 ghost:
   url: "https://example.com"

@@ -20,4 +20,4 @@ data:
             endpoint: {{ .Values.r2.endpoint }}
             bucket: {{ .Values.r2.bucket }}
             access-key-id: {{ .Values.r2.accessKeyId }}
-            secret-access-key: {{ .Values.r2.secretAccess }}
+            secret-access-key: {{ .Values.r2.secretAccessKey }}
