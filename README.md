@@ -1,3 +1,4 @@
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/ghost)](https://artifacthub.io/packages/search?repo=ghost)
 # Ghost Helm Chart
 
 This repository hosts the Helm chart for deploying [Ghost](https://ghost.org/) on Kubernetes clusters. Ghost is a powerful open-source publishing platform designed for professional blogging.
