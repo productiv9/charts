@@ -3,12 +3,12 @@ entries:
   ghost:
   - apiVersion: v2
     appVersion: 5.79.0
-    created: "2024-02-09T18:25:36.55359+09:00"
+    created: "2024-02-09T18:36:53.921877+09:00"
     description: A Helm chart for Ghost
-    digest: c06d1bcbf26ec9906254b7abf30e08d47d6fee0444aff3e71663ba7e59a1c9cc
+    digest: 679b87756202873496fab03f6ff823e26c4202e423bf363123bed3f6fd27327e
     name: ghost
     type: application
     urls:
     - ghost-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-09T18:25:36.552381+09:00"
+generated: "2024-02-09T18:36:53.921318+09:00"
