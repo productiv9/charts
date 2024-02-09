@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ghost-env
 data:
-  ghost.env: |-
+  data:
     database__client=sqlite3
     database__connection__filename=/var/lib/ghost/content/data/ghost.db
     database__useNullAsDefault=true
