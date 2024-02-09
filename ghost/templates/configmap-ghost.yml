@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ghost
+data:
+  .rclone.conf: |-
+    [cloudflare]
+    type = s3
+    provider = Cloudflare
+    access_key_id = {{ .Values.r2.accessKeyId }}
+    secret_access_key = {{ .Values.r2.secretAccessKey }}
+    endpoint = {{ .Values.r2.endpoint }}
+    acl = private
+
+  litestream.yml: |-
+    dbs:
+      - path: /var/lib/ghost/content/data/ghost.db
+        replicas:
+          - type: s3
+            endpoint: {{ .Values.r2.endpoint }}
+            bucket: {{ .Values.r2.bucket }}
+            access-key-id: {{ .Values.r2.accessKeyId }}
+            secret-access-key: {{ .Values.r2.secretAccess }}

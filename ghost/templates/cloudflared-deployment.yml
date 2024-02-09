@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cloudflared
+  name: cloudflared
+spec:
+  replicas: {{.Values.cloudflared.replicaCount}}
+  selector:
+    matchLabels:
+      pod: cloudflared
+  template:
+    metadata:
+      labels:
+        pod: cloudflared
+    spec:
+      containers:
+        - command:
+            - cloudflared
+            - tunnel
+            - --metrics
+            - 0.0.0.0:2000
+            - run
+          args:
+            - --token
+            - {{.Values.cloudflared.token}}
+          image: "cloudflare/cloudflared:{{ .Values.image.cloudflared.tag }}"
+          name: cloudflared
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "512m"
+            requests:
+              memory: "64Mi"
+              cpu: "128m"

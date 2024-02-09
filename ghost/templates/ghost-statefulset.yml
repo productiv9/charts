@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ghost
+spec:
+  serviceName: ghost
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      initContainers:
+        - name: init-db
+          image: "litestream/litestream:{{ .Values.image.litestream.tag }}"
+          args:
+            - "restore"
+            - "-if-db-not-exists"
+            - "-if-replica-exists"
+            - "/var/lib/ghost/content/data/ghost.db"
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+            - name: config
+              mountPath: /etc/litestream.yml
+              subPath: litestream.yml
+
+        - name: init-images
+          image: "bitnami/rclone:{{ .Values.image.rclone.tag }}"
+          securityContext:
+            runAsUser: 0
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - "rclone sync cloudflare:{{ .Values.r2.bucket }}/images /var/lib/ghost/content/images/ --transfers=4 --checkers=8"
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+            - name: config
+              mountPath: /.rclone.conf
+              subPath: .rclone.conf
+
+      containers:
+        - name: ghost
+          image: "ghost:{{ .Values.image.ghost.tag }}"
+          envFrom:
+            - configMapRef:
+                name: ghost-env
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+
+        - name: litestream
+          image: "litestream/litestream:{{ .Values.image.litestream.tag }}"
+          args: ["replicate"]
+          volumeMounts:
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+            - name: config
+              mountPath: /etc/litestream.yml
+              subPath: litestream.yml
+          ports:
+            - name: metrics
+              containerPort: 9090
+
+        - name: rclone
+          image: "bitnami/rclone:{{ .Values.image.rclone.tag }}"
+          securityContext:
+            runAsUser: 0
+          command: ["/bin/sh"]
+          args:
+            - "-c"
+            - |
+              while :; do
+                rclone sync /var/lib/ghost/content/images/ cloudflare:{{ .Values.r2.bucket }}/images --transfers=4 --checkers=8
+                sleep {{ .Values.ghost.imageSyncInterval }}  # Sync every interval
+              done
+          volumeMounts:
+            - name: config
+              mountPath: /.rclone.conf
+              subPath: .rclone.conf
+            - name: ghost-content
+              mountPath: /var/lib/ghost/content
+
+      volumes:
+        - name: config
+          configMap:
+            name: ghost
+
+  volumeClaimTemplates:
+    - metadata:
+        name: ghost-content
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{.Values.volumeClaims.ghostContent.size}}

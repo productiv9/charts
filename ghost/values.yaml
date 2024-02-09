@@ -1,0 +1,31 @@
+image:
+  ghost:
+    tag: 5.79.0
+  litestream:
+    tag: 0.3
+  rclone:
+    tag: latest
+  cloudflared:
+    tag: latest
+
+
+cloudflared:
+  token: "YOUR_TOKEN"
+  replicaCount: 2
+
+r2:
+  bucket: "YOUR_BUCKET"
+  endpoint: "YOUR_ENDPOINT"
+  accessKeyId: "YOUR_ACCESS_KEY_ID"
+  secretAccess: "YOUR_SECRET_ACCESS"
+
+ghost:
+  url: "https://example.com"
+  mailFrom: ""
+  sendgridApiKey: "YOUR_API_KEY"
+  imageSyncInterval: 60 # in seconds
+
+volumeClaims:
+  ghostContent:
+    size: 5Gi
+
